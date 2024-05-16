@@ -121,6 +121,4 @@ If you have used our 25nt-value or TIP model in your research, please kindly cit
     doi = {},
     url = {}
 }
-``` = {}
-}
-```
+``` 
