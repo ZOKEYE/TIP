@@ -1,104 +1,94 @@
 # TIP MODEL
 The repo contains:
 
-1. 25nt-value model: a method for prediction of 25nt 5'UTR TIP (Translation Initiation Potential) based on CNN (Convolutional Neural Network).
-2. TIP model: a method for prediction of **longer** 5'UTR TIP based on sliding and linear combinations with 25nt-value model.
+1. RBV model: a method for prediction of 25nt 5'UTR TIA (Translation Initiation Activity) based on CNN (Convolutional Neural Network) structure.
+2. TIP model: a method for prediction of ***longer*** 5'UTR TIP (Translation Initiation Potential) based on TIA values predicted with RBV model through a 25nt sliding window and feature fusion with MLP (Multilayer Perceptron) structure.
 
-In this package, we provides resources including: source codes of training the 25nt-value model and TIP model, trained models and usage examples. We also offer a [web server](https://www.baidu.com) as an online tool.
+In this package, we provides resources including: source codes of training RBV model and TIP model, our trained models and usage examples. We also offer a ***[web server](https://www.baidu.com)*** as an online tool.
 
 ## Table of Contents
-> warning: Please note that the 25nt-value and TIP model are completely free for academic usage. However it is licenced for commercial usage. Please first refer to the License section for more info.
+> warning: Please note that RBV model and TIP model are completely free for academic usage. However it is licenced for commercial usage. Please first refer to the License section for more info.
 
 - Installation
-- Quick Start
+- Training
 - Usage Examples
-    - 25nt-value Prediction
-    - TIP Prediction
 - Models Availability
 - Dataset Availability
 - License
 - Citation
 
-## Installation
-25nt-value model is easy to use with tensorflow package. We recommend you to build a python virtual environment with Anaconda.
+## 1. Installation
 
-### Initialize with requirements installed
-For easy requirement handling, you can use TIP.yml files to initialize conda environment with requirements installed.
-
-```
-$ conda env create --name TIP -f TIP.yml
-$ conda activate TIP
-```
-
-### Create and activate a new virtual environment
-You can also install virtual environment by yourself.
-
+### 1.1 Create and activate a new virtual environment
+RBV model and TIP model are easy to use with tensorflow package. We recommend you to build a python virtual environment with Anaconda.
 ```
 $ conda create -n TIP python=3.10.4 -y
 $ conda activate TIP
+```
+
+### 1.2 Install the package and other requirements
+```
 $ git clone https://github.com/
 $ cd ./TIP-main
 $ python -m pip install -r requirements.txt
 ```
 
+## 2. Training (Skip this section if you predict on trained models)
 
-## Quick Start
-Please call the run_25nt_value.py script from the ./src directory, and we provide optimized parameters. Also support for adjusting parameters.
+### 2.1 Data Processing
+Please see the template data at ***[train/input/sample_RBV_dataset.xlsx](./train/input)*** and ***[train/input/sample_TIP_dataset.xlsx](./train/input)***. If you are trying to train model with your own data, please process you data into the same format as it. For details, please refer to the ***[README.md](./train/README.md)*** file in the folder ***[train](./train)***.
+
+### 2.2 RBV Model Training
+We provide a simple non-parallelized RBV model training program, which is more suitable for a small number of model training. Please call the ***[train_RBV.py](./src/train_RBV.py)*** script from the folder ***[src](./src)***, and we provide optimized parameters. Support for adjusting parameters.
 ```
-$ cd ./src
-$ python run_RBV.py
+$ python ./src/train_RBV.py -rmn 2
 ```
-
-<!-- **Arguments** -->
-#### Arguments
-**-mn, --model_num**
-- The models involved in prediction, the default value is 2000
-
-**-d, --dataset** 
-- The CSV file including the UTR samples for training. The default path used is '../data/train/utrdb.xlsx'.
-
-**-bs, --batch_size**
-- The batch size used to train the model, the default value is 128
-
-**-lr, --learning_rate**
-- The learning rate of the Adam optimizer used to optimize the model parameters. The default value is 1e-3. If 4 is provided, the learning rate will be 1e-4.
-
-
-## Usage Examples
-The input CSV file should be present in the ../data/inputs directory. We have provided 2 input sample files already in the codebase - tip25.csv for 25nt-value model and tip90.csv for TIP model. Moereover, the intermediate files will be saved in the ../data/record/out folder. In order to speed up the running of the program, we use a multi-threaded parallel approach, and the PID information will be saved in the ../data/record/PID folder.
-
-### 25nt-value Model Prediction
+In the article, we adopted an ensemble model prediction method based on random forest decision-making, which requires training multiple RBV models (We used 2000 models as a model group). We provide programs that run in parallel with multiple processes, please call the ***[setup_RBV.sh](./setup_RBV.sh)*** scripy, also support for adjusting parameters. For details, please refer to the ***[README.md](./train/README.md)*** file in the folder ***[train](./train)***.
 ```
-# The argument '-i' or '--input' represent the input file name
-$ python predict_25nt_value.py -i tip25.csv
+$ bash setup_RBV.sh
 ```
-The input CSV file contains two columns: gene name (or identifier) and UTR sequence. The UTR length is allowed to vary, but is at least 25nt. When the length remains 25nt, the model will directly predict the 25nt-value TIP. Otherwise, the model will scan the sequence with a sliding window of 25nt size and output the sliding results. The result will be present in the ../data/output folder.
-> Please notice that gene name (or identifier) cannot be underlined or duplicated.
+With the above command, the following files will be generated: the prediction file ***e.g. 0_pred_test.csv*** with each model ***e.g. 0_best_model.h5*** , prediction file ***test_cross_validation_pred.csv*** with cross validation method and scatter plots ***scatter_cross_validation.jpg***.
 
-### TIP Model Prediction
+
+### 2.3 TIP Model Training
+A sliding and scanning operation of the input sequences is performed before the TIP model training. Specifically, the input to the TIP model is the TIA matrix, which is obtained from the origin sequence of 60nt upstream and 30nt downstream of the start codon AUG, through scanning with a 25nt sliding window and predicting based on the RBV model group. Therefore, the program will default to scan the input sequences and generate the corresponding files before TIP model training. In order to avoid the waste of time caused by repeated scanning, you can directly use the scanned csv file as the input parameter. See Chapter 3 of the scanning and predicting method, and the ***[README.md](./train/README.md)*** file in the folder ***[train](./train)*** for more details. You can run ***[train_TIP.sh](./train_TIP.sh)*** script for simple training of a single model.
 ```
-# The argument '-i' or '--input' represent the input file name
-$ python predict_90nt_TIP.py -i tip90.csv
+$ python ./src/train_TIP.py
 ```
-The input CSV file contains two columns: gene name (or identifier) and UTR sequence. The UTR length is allowed to vary, but is at least 90nt. When the length exceeds 90nt, we wil still scan with the method of sliding window. The result will be present in the ../data/output folder.
-> Please notice that gene name (or identifier) cannot be underlined or duplicated.
+Also, we provide programs that run in parallel with multiple processes, please call the ***[setup_TIP.sh](./setup_TIP.sh)*** scripy, also support for adjusting parameters. Note that you can preset the scan file in the script. Please refer to the ***README.md*** file in the folder ***[train](./train)*** for details.
+```
+$ bash setup_TIP.sh
+```
+With the above command, the following files will be generated: the prediction file ***e.g. 0_pred_val.csv*** with each model, prediction file ***test_cross_validation_pred.csv*** with cross validation method and scatter plots ***scatter_cross_validation.jpg***.
+
+
+## 3. Usage Examples
+### 3.1 RBV Model Prediction
+TIA prediction based on the RBV model consists of two main aspects:
+- Prediction of 25nt short UTR sequence regulatory capacity
+- Prediction of long sequences based on 25nt sliding window scanning.
+
+In order to be compatible with the two requirements, we both use the sliding scan method to process the input sequences. We provide a template file ***[sample_RBV_predict.xlsx](./examples/input)*** and a script file ***[predict_RBV.sh](./predict_RBV.sh)*** in the code base. For details, please refer to the ***[README.md](./examples/README.md)*** file in the folder ***[examples](./examples)***.
+```
+$ bash predict_RBV.sh 
+```
+You can observe the progress of the program in real time from the command line, and the following files will be generated: the prediction file ***e.g. pred_RBV_0.csv*** of each subprocess and the final prediction file ***e.g. pred_rbv_sample_RBV_predict.csv***.
+
+
+### 3.2 TIP Model Prediction
+Similar to TIP model training, a sliding scan of the input sequences with RBV model group is required before prediction. Therefore, we also provide the path of the scanned file as a parameter in the script file, so as to avoid wasting time by repeated scanning. We provide a template file ***[sample_TIP_testset.xlsx](./examples/input)*** in the code base. For details, please refer to the ***[README.md](./examples/README.md)*** file in the folder ***[examples](./examples)***.
+```
+$ bash predict_TIP.sh
+```
+You can observe the progress of the program in real time from the command line, and the following files will be generated: the prediction file ***e.g. pred_TIP_0.csv*** of each subprocess, a scatterplot of actual activity and predicted TIP named ***draw_scatter.jpg***, and the final prediction file ***e.g. pred_rbv_sample_RBV_predict.csv***.
 
 ## Models Availability
-<!-- <table>
-    <tr>
-        <td>Model</td>
-        <td>Github</td>
-    </tr>
-    <tr>
-        <td>25nt-value Model</td>
-        <td>[download](https://github.com/)</td>
-    </tr>
-</table> -->
 Access our trained model.
-- download 25nt-value TIP model: https://github.com/
+- download RBV model: https://github.com/
+- download TIP model: https://github.com/
 
 ## Dataset Availability
-
+If you need to access to the original 5'UTR library, please email me at keyezhou@163.com.
 
 ## License
 
@@ -106,7 +96,7 @@ Access our trained model.
 ## Citation
 If you have any question regarding our paper or codes, please feel free to start an issue or email Keyi Zhou (keyezhou@163.com).
 
-If you have used our 25nt-value or TIP model in your research, please kindly cite the following publications:
+If you have used our RBV model or TIP model in your research, please kindly cite the following publications:
 
 ```
 @article {TIP,
@@ -121,4 +111,4 @@ If you have used our 25nt-value or TIP model in your research, please kindly cit
     doi = {},
     url = {}
 }
-``` 
+```
