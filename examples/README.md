@@ -3,8 +3,8 @@
 ## 1. RBV Model Predicting
 This module is mainly responsible for scanning and predicting UTR sequences with a 25nt sliding window based on RBV model. Considering compatibility, regardless of whether the leng, we use the scanning approch for prediction. Since the RBV model uses an ensemble model prediction method based on random forest decision-making, each sequence is predicted by the models in the RBV model group. Ultimately, the median of predicted TIA values will be taken as the output.
 
-## 1.1 input folder
-The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_RBV_predict.xlsx](./example/input/sample_RBV_predict.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
+### 1.1 input folder
+The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_RBV_predict.xlsx](./input/sample_RBV_predict.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
 - The "Gene Name" column is used to uniquely specify each UTR sequence. Please notice that gene name cannot be underlined or duplicated.
 - The "UTR Sequence" column is used for model training, must be not shorter than 25nt in length, and cannot contain any letters other than "ATUCG". In addition, it is permissible for each line to have a different UTR sequence length. 
 - The "Actual Activity" column is used to provide the training label for each sequence. This column can be empty if it is only an activity prediction and does not need to be validated.
@@ -33,8 +33,8 @@ This folder is related to the progress bar and can be ignored.
 ## 2. TIP Model Predicting
 Similar to TIP model training, you can directly provide the TIA scan file of the sequence to be predicted. Other than that, it is basically the same as the RBV model prediction approach.
 
-## 2.1 input folder
-The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_TIP_testset.xlsx](./example/input/sample_TIP_testset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
+### 2.1 input folder
+The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_TIP_testset.xlsx](./input/sample_TIP_testset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
 - The "Gene Name" column is used to uniquely specify each UTR sequence. Please notice that gene name cannot be underlined or duplicated.
 - The "UTR Sequence" column is used for model training, must be 90nt in length, and cannot contain any letters other than "ATUCG".
 - The "Actual Activity" column is used to provide the training label for each sequence. This column can be empty if it is only an activity prediction and does not need to be validated.
