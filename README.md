@@ -84,8 +84,8 @@ You can observe the progress of the program in real time from the command line, 
 
 ## Models Availability
 Access our trained model.
-- download RBV model: https://github.com/
-- download TIP model: https://github.com/
+- download RBV model: https://github.com/ZOKEYE/TIP/tree/main/saved_models/RBV
+- download TIP model: https://github.com/ZOKEYE/TIP/tree/main/saved_models/TIP
 
 ## Dataset Availability
 If you need to access to the original 5'UTR library, please email me at keyezhou@163.com.
