@@ -3,7 +3,7 @@
 ## 1. RBV Model Training
 
 ### 1.1 input folder
-The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_RBV_dataset.xlsx](./train/input)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
+The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
 - The "Gene Name" column is used to uniquely specify each UTR sequence. Please notice that gene name cannot be underlined or duplicated.
 - The "UTR Sequence" column is used for model training, must be 25nt in length, and cannot contain any letters other than "ATUCG". 
 - The "Actual Activity" column is used to provide the training label for each sequence.
@@ -31,16 +31,16 @@ After completing all model training, cross-validation results and scatter plots 
 
 ### 1.7 Arguments
 **-d, --dataset** 
-- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./train/input)***.
+- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)***.
 
 **-rmn, --rbv_model_num**
 - The RBV models involved in prediction. The default value is 2000.
 
 **-rmf, --rbv_model_fold**
-- The folder to save RBV model. The default path used is ***[/saved_models/RBV](/saved_models/RBV)***.
+- The folder to save RBV model. The default path used is ***[./saved_models/RBV](../saved_models/RBV)***.
 
 **-ro, --rbv_output_fold**
-- The folder to save output data. The default path used is ***[./train/RBV_output](./train/RBV_output)***.
+- The folder to save output data. The default path used is ***[./train/RBV_output](./RBV_output)***.
 
 **-bs, --batch_size**
 - The batch size used to train the model. The default value is 128.
@@ -54,7 +54,7 @@ After completing all model training, cross-validation results and scatter plots 
 ## 2. TIP Model Training
 
 ### 2.1 input folder
-The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_TIP_trainset.xlsx](./train/input)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column, which is similar to RBV model training. Since the input to the TIP model is TIA matric of UTR sequence, you can choose either of the two methods under:
+The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_TIP_trainset.xlsx](./input/sample_TIP_trainset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column, which is similar to RBV model training. Since the input to the TIP model is TIA matric of UTR sequence, you can choose either of the two methods under:
 - Allow the programme to perform the scan automatically, without performing any additional actions, but you need to pay attention to the output path of the scan file in the script.
 - Enter the scanned file of the input file as a parameter, at this point either ***train_TIP.sh*** script or ***setup_TIP.sh*** script, you need to change the scanned_file parameter to the absolute path of the scanned file.
 
@@ -82,7 +82,7 @@ The PID folder records the process IDs of subprocesses, which helps users termin
 
 ### 2.7 Arguments
 **-i, --input_file** 
-- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./train/input)***.
+- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)***.
 
 **-sf, --scan_file** 
 - The **csv file** including the TIA matric scanned with a 25nt sliding window based on RBV model group, and the input sequence is aligned with the UTR sequence in the input_file. The default path used is **NULL**.
@@ -91,10 +91,10 @@ The PID folder records the process IDs of subprocesses, which helps users termin
 - The TIP models involved in prediction. The default value is 2000.
 
 **-tmf, --tip_model_fold**
-- The folder to save TIP model. The default path used is ***[/saved_models/TIP](/saved_models/TIP)***.
+- The folder to save TIP model. The default path used is ***[./saved_models/TIP](../saved_models/TIP)***.
 
 **-to, --tip_output_fold**
-- The folder to save output data. The default path used is ***[./train/TIP_output](./train/TIP_output)***.
+- The folder to save output data. The default path used is ***[./train/TIP_output](./TIP_output)***.
 
 **-bs, --batch_size**
 - The batch size used to train the model. The default value is 128.
