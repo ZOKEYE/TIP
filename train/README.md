@@ -1,9 +1,9 @@
 # Training details
 
-## 1. RBV Model Training
+## 1. TSV Model Training
 
 ### 1.1 input folder
-The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
+The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_TSV_dataset.xlsx](./input/sample_TSV_dataset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
 - The "Gene Name" column is used to uniquely specify each UTR sequence. Please notice that gene name cannot be underlined or duplicated.
 - The "UTR Sequence" column is used for model training, must be 25nt in length, and cannot contain any letters other than "ATUCG". 
 - The "Actual Activity" column is used to provide the training label for each sequence.
@@ -16,10 +16,10 @@ During the training of each model, 10% of the dataset is randomly divided as a t
 The scatter_test folder includes scatter plots named like ***0_scatter_test.jpg*** corresponding to the predicted TIA values and the actual activity of the test set partitioned under each model.
 
 ### 1.4 log folder
-The log folder recording the runtime status of each subprocess aids users in real-time monitoring. This folder is only used in multiprocess mode, i.e. when ***setup_RBV.sh*** is running.
+The log folder recording the runtime status of each subprocess aids users in real-time monitoring. This folder is only used in multiprocess mode, i.e. when ***setup_TSV.sh*** is running.
 
 ### 1.5 PID folder
-The PID folder records the process IDs of subprocesses, which helps users terminate program execution in real-time. This folder is only used in multiprocess mode, i.e. when ***setup_RBV.sh*** is running. If you want to kill the subprocess, please execute the following script and note two things: 
+The PID folder records the process IDs of subprocesses, which helps users terminate program execution in real-time. This folder is only used in multiprocess mode, i.e. when ***setup_TSV.sh*** is running. If you want to kill the subprocess, please execute the following script and note two things: 
 - this script will kill the main process and all subprocesses; 
 - please pay attention to the pid_fold parameter in the file and make sure that the parameter points to the correct folder (please correspond to the folder under which the PID folder is located).
 ```
@@ -31,16 +31,16 @@ After completing all model training, cross-validation results and scatter plots 
 
 ### 1.7 Arguments
 **-d, --dataset** 
-- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)***.
+- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_TSV_dataset.xlsx](./input/sample_TSV_dataset.xlsx)***.
 
-**-rmn, --rbv_model_num**
-- The RBV models involved in prediction. The default value is 2000.
+**-rmn, --tsv_model_num**
+- The TSV models involved in prediction. The default value is 2000.
 
-**-rmf, --rbv_model_fold**
-- The folder to save RBV model. The default path used is ***[./saved_models/RBV](../saved_models/RBV)***.
+**-rmf, --tsv_model_fold**
+- The folder to save TSV model. The default path used is ***[./saved_models/TSV](../saved_models/TSV)***.
 
-**-ro, --rbv_output_fold**
-- The folder to save output data. The default path used is ***[./train/RBV_output](./RBV_output)***.
+**-ro, --tsv_output_fold**
+- The folder to save output data. The default path used is ***[./train/TSV_output](./TSV_output)***.
 
 **-bs, --batch_size**
 - The batch size used to train the model. The default value is 128.
@@ -54,7 +54,7 @@ After completing all model training, cross-validation results and scatter plots 
 ## 2. TIP Model Training
 
 ### 2.1 input folder
-The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_TIP_trainset.xlsx](./input/sample_TIP_trainset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column, which is similar to RBV model training. Since the input to the TIP model is TIA matric of UTR sequence, you can choose either of the two methods under:
+The input file for training is placed in this folder by default, and we provide the template file ***[train/input/sample_TIP_trainset.xlsx](./input/sample_TIP_trainset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column, which is similar to TSV model training. Since the input to the TIP model is TIA matric of UTR sequence, you can choose either of the two methods under:
 - Allow the programme to perform the scan automatically, without performing any additional actions, but you need to pay attention to the output path of the scan file in the script.
 - Enter the scanned file of the input file as a parameter, at this point either ***train_TIP.sh*** script or ***setup_TIP.sh*** script, you need to change the scanned_file parameter to the absolute path of the scanned file.
 
@@ -82,10 +82,10 @@ The PID folder records the process IDs of subprocesses, which helps users termin
 
 ### 2.7 Arguments
 **-i, --input_file** 
-- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_RBV_dataset.xlsx](./input/sample_RBV_dataset.xlsx)***.
+- The **xlsx file** including the UTR samples for training. The default path used is ***[./train/input/sample_TSV_dataset.xlsx](./input/sample_TSV_dataset.xlsx)***.
 
 **-sf, --scan_file** 
-- The **csv file** including the TIA matric scanned with a 25nt sliding window based on RBV model group, and the input sequence is aligned with the UTR sequence in the input_file. The default path used is **NULL**.
+- The **csv file** including the TIA matric scanned with a 25nt sliding window based on TSV model group, and the input sequence is aligned with the UTR sequence in the input_file. The default path used is **NULL**.
 
 **-tmn, --tip_model_num**
 - The TIP models involved in prediction. The default value is 2000.
@@ -105,5 +105,5 @@ The PID folder records the process IDs of subprocesses, which helps users termin
 **-p, --process_sum**
 - Maximum number of processes in multiprocess mode, which can be set manually by the user. The default value is based on the number of cores in the CPU.
 
-> Please note that since the RBV model will be used for scanning while training TIP models, you need to pay attention to checking and modifying the parameters related to RBV prediction in the script, such as the number of RBV models, the intermediate result saving path, etc.
+> Please note that since the TSV model will be used for scanning while training TIP models, you need to pay attention to checking and modifying the parameters related to TSV prediction in the script, such as the number of TSV models, the intermediate result saving path, etc.
 
