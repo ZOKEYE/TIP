@@ -60,7 +60,7 @@ def plotDraw(activity, predict, pic_save_file):
     plt.xticks(ticks, ticks, fontsize=15)
     plt.yticks(ticks, ticks, fontsize=15)
     plt.xlabel('Actual Activity', fontdict=font, fontsize=15)
-    plt.ylabel('Pred RBV-ln', fontdict=font, fontsize=15)
+    plt.ylabel('Pred TSV-ln', fontdict=font, fontsize=15)
     plt.scatter(activity, predict, s=10, label='Pearson=%.4f' % pearson)
     plt.legend(loc='lower right', fontsize=15)
 
