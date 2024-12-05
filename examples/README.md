@@ -1,19 +1,19 @@
 # Predicting details
 
-## 1. RBV Model Predicting
-This module is mainly responsible for scanning and predicting UTR sequences with a 25nt sliding window based on RBV model. Considering compatibility, regardless of whether the leng, we use the scanning approch for prediction. Since the RBV model uses an ensemble model prediction method based on random forest decision-making, each sequence is predicted by the models in the RBV model group. Ultimately, the median of predicted TIA values will be taken as the output.
+## 1. TSV Model Predicting
+This module is mainly responsible for scanning and predicting UTR sequences with a 25nt sliding window based on TSV model. Considering compatibility, regardless of whether the leng, we use the scanning approch for prediction. Since the TSV model uses an ensemble model prediction method based on random forest decision-making, each sequence is predicted by the models in the TSV model group. Ultimately, the median of predicted TIA values will be taken as the output.
 
 ### 1.1 input folder
-The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_RBV_predict.xlsx](./input/sample_RBV_predict.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
+The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_TSV_predict.xlsx](./input/sample_TSV_predict.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
 - The "Gene Name" column is used to uniquely specify each UTR sequence. Please notice that gene name cannot be underlined or duplicated.
 - The "UTR Sequence" column is used for model training, must be not shorter than 25nt in length, and cannot contain any letters other than "ATUCG". In addition, it is permissible for each line to have a different UTR sequence length. 
 - The "Actual Activity" column is used to provide the training label for each sequence. This column can be empty if it is only an activity prediction and does not need to be validated.
 
 ### 1.2 output file
-After completing predicting, the output file will be saved as ***pred_rbv_sample_RBV_predict.csv*** in the examples folder. Additionally, if the "Actual Activity" column does not exist in the input file, that column in the prediction file will be populated with 0.
+After completing predicting, the output file will be saved as ***pred_tsv_sample_TSV_predict.csv*** in the examples folder. Additionally, if the "Actual Activity" column does not exist in the input file, that column in the prediction file will be populated with 0.
 
-### 1.3 pred_rbv fold
-This folder saves the prediction result file of each subprocess named like ***pred_RBV_0.csv***. The origin gene names, combined with the start position of the subsequence in each sliding window, make up the list of genes in the file.
+### 1.3 pred_tsv fold
+This folder saves the prediction result file of each subprocess named like ***pred_TSV_0.csv***. The origin gene names, combined with the start position of the subsequence in each sliding window, make up the list of genes in the file.
 
 ### 1.4 log folder
 The log folder recording the runtime status of each subprocess aids users in real-time monitoring.
@@ -31,7 +31,7 @@ This folder is related to the progress bar and can be ignored.
 
 
 ## 2. TIP Model Predicting
-Similar to TIP model training, you can directly provide the TIA scan file of the sequence to be predicted. Other than that, it is basically the same as the RBV model prediction approach.
+Similar to TIP model training, you can directly provide the TIA scan file of the sequence to be predicted. Other than that, it is basically the same as the TSV model prediction approach.
 
 ### 2.1 input folder
 The input file for predicting is placed in this folder by default, and we provide the template file ***[example/input/sample_TIP_testset.xlsx](./input/sample_TIP_testset.xlsx)*** as an example, including the "Gene Name" column, the "UTR Sequence" column, and the "Actual Activity" column. 
