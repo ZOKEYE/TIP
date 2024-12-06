@@ -110,7 +110,7 @@ def trainModel(args, model_name, save_test_file, save_pic_file, logger, verbose=
     pred_test = pred_test.reshape(1, test_num)[0]
 
     # write prediction to saved file
-    pred_data = [['Gene Name', 'UTR Sequence', 'Actual Acitivity', 'Actual Acitivity-ln', 'pred_RBV', 'pred_RBV_ln']]
+    pred_data = [['Gene Name', 'UTR Sequence', 'Actual Acitivity', 'Actual Acitivity-ln', 'pred_TSV', 'pred_TSV_ln']]
     for i in range(test_num):
         pred_data.append([test_data[i, 0], test_data[i, 1], 
                           np.exp(test_data[i, 2]), test_data[i, 2], 
@@ -123,11 +123,11 @@ def trainModel(args, model_name, save_test_file, save_pic_file, logger, verbose=
     
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='RBV Arguments')
-    parser.add_argument('-rmn', '--rbv_model_num', type=int, default=1, help='RBV model num')
-    parser.add_argument('-rmf', '--rbv_model_fold', type=str, default='./saved_models/RBV', help='RBV model fold')
-    parser.add_argument('-ro', '--rbv_output_fold', type=str, default='./train/RBV_output', help='RBV output fold')
-    parser.add_argument('-d', '--dataset', type=str, default='./train/input/sample_RBV_dataset.xlsx', help='dataset file name')
+    parser = argparse.ArgumentParser(description='TSV Arguments')
+    parser.add_argument('-rmn', '--tsv_model_num', type=int, default=1, help='TSV model num')
+    parser.add_argument('-rmf', '--tsv_model_fold', type=str, default='./saved_models/TSV', help='TSV model fold')
+    parser.add_argument('-ro', '--tsv_output_fold', type=str, default='./train/TSV_output', help='TSV output fold')
+    parser.add_argument('-d', '--dataset', type=str, default='./train/input/sample_TSV_dataset.xlsx', help='dataset file name')
     parser.add_argument('-bs', '--batch_size', type=int, default=128, help='batch size')
     parser.add_argument('-lr', '--learning_rate', type=float, default=1e-3, help='learning rate')
     args = parser.parse_args()
@@ -137,35 +137,35 @@ if __name__ == "__main__":
         exit()
 
     # check there exists model fold or not
-    if not os.path.exists(args.rbv_model_fold):
-        os.mkdir(args.rbv_model_fold)
+    if not os.path.exists(args.tsv_model_fold):
+        os.mkdir(args.tsv_model_fold)
     # check there exists data save fold or not
-    if not os.path.exists(args.rbv_output_fold):
-        os.mkdir(args.rbv_output_fold)
+    if not os.path.exists(args.tsv_output_fold):
+        os.mkdir(args.tsv_output_fold)
 
     # remove old cross validation file 
-    save_cross_val_file = '{}/test_cross_validation_pred.csv'.format(args.rbv_output_fold)
+    save_cross_val_file = '{}/test_cross_validation_pred.csv'.format(args.tsv_output_fold)
     if os.path.exists(save_cross_val_file):
         removeFolds(save_cross_val_file)
     # remove old picture save file
-    save_pic_file = '{}/scatter_cross_validation.jpg'.format(args.rbv_output_fold)
+    save_pic_file = '{}/scatter_cross_validation.jpg'.format(args.tsv_output_fold)
     if os.path.exists(save_pic_file):
         removeFolds(save_pic_file)
     # check file fold for test set prediction
-    save_test_fold = '{}/pred_test'.format(args.rbv_output_fold)
+    save_test_fold = '{}/pred_test'.format(args.tsv_output_fold)
     if os.path.exists(save_test_fold):
         removeFolds(save_test_fold)
     os.mkdir(save_test_fold)
     # check picture fold for test set prediction
-    save_pic_fold = '{}/scatter_test'.format(args.rbv_output_fold)
+    save_pic_fold = '{}/scatter_test'.format(args.tsv_output_fold)
     if os.path.exists(save_pic_fold):
         removeFolds(save_pic_fold)
     os.mkdir(save_pic_fold)
     
     # train models
-    print('Ready to train RBV models.')
-    for model_idx in range(args.rbv_model_num):
-        model_name = '{}/{}_best_model.h5'.format(args.rbv_model_fold, model_idx)
+    print('Ready to train TSV models.')
+    for model_idx in range(args.tsv_model_num):
+        model_name = '{}/{}_best_model.h5'.format(args.tsv_model_fold, model_idx)
         save_test_file = '{}/{}_pred_test.csv'.format(save_test_fold, model_idx)
         save_pic_file = '{}/{}_scatter_test.jpg'.format(save_pic_fold, model_idx)
         trainModel(args, model_name, save_test_file, save_pic_file, None, verbose=1)
