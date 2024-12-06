@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 from lib.operation import *
 from lib.divideData import divideTipData
 from cross_validation_draw import plotDraw, historyDraw
-from predict_RBV import predictRBV
+from predict_TSV import predictTSV
 
 
 # model parameter
