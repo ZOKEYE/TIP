@@ -50,7 +50,7 @@ def check_act_valid(activities):
         exit()
     activities = np.log(activities.astype(float))
 
-def check_scanned_rbv(rbv_data, limit_len=66):
-    if len(rbv_data) != limit_len:
+def check_scanned_tsv(tsv_data, limit_len=66):
+    if len(tsv_data) != limit_len:
         print('Error: Please check if the TIA scan matrix length is fixed at 66!!!!!!!!!!!!!!!!!!!!')
         exit()
