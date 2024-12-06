@@ -28,13 +28,13 @@ def readUtrFile(file_name):
 
 
 def readScannedFile(utr_file, scan_file):
-    # read rbv model scanning data
+    # read tsv model scanning data
     origin_data = csvRead(scan_file)
-    RbvDict = dict()
+    TsvDict = dict()
     for i in range(1, len(origin_data)):
         genename = origin_data[i][0]
-        check_scanned_rbv(origin_data[i][3:])
-        RbvDict[genename] = origin_data[i][3:]
+        check_scanned_tsv(origin_data[i][3:])
+        TsvDict[genename] = origin_data[i][3:]
 
     # read 5'UTR dataset
     df = pd.read_excel(utr_file)
@@ -52,11 +52,11 @@ def readScannedFile(utr_file, scan_file):
     utr_data = []
     for i in range(len(GeneName)):
         genename, sequence, activity = GeneName[i], Sequence[i], Activity[i]
-        rbv_data = np.log(np.array(RbvDict[genename]).astype(float)).astype(str)  # rbv scanned data taken as logarithmic
-        rbv_data = np.insert(rbv_data, 0, activity)  # insert activity
-        rbv_data = np.insert(rbv_data, 0, sequence)  # insert sequence
-        rbv_data = np.insert(rbv_data, 0, genename)  # insert genename
-        utr_data.append(rbv_data)
+        tsv_data = np.log(np.array(TsvDict[genename]).astype(float)).astype(str)  # tsv scanned data taken as logarithmic
+        tsv_data = np.insert(tsv_data, 0, activity)  # insert activity
+        tsv_data = np.insert(tsv_data, 0, sequence)  # insert sequence
+        tsv_data = np.insert(tsv_data, 0, genename)  # insert genename
+        utr_data.append(tsv_data)
     
     utr_data = np.array(utr_data)
     utr_data = utr_data[np.argsort(Activity)[::-1]]  # sort by activity in descending order
@@ -116,7 +116,7 @@ def divideTipData(utr_file, scan_file, percent=0.2):
     return train_data, val_data
 
 
-def divideRBVPredictData(args):
+def divideTSVPredictData(args):
     # get params
     source_file = args.input_file  # input file
     server_sum = args.server_sum  # server sum
@@ -213,12 +213,12 @@ def divideTIPPredictData(args):
         Activity = np.array([0] * Input_Length)
         args.draw_flag = 0
 
-    # read scanned rbv data
+    # read scanned tsv data
     origin_scanned_data = csvRead(scanned_file)
-    ScannedRBV = []
+    ScannedTSV = []
     for idx in range(1, len(origin_scanned_data)):
-        ScannedRBV.append(origin_scanned_data[idx][3:])
-    ScannedRBV = np.log(np.array(ScannedRBV).astype(float))
+        ScannedTSV.append(origin_scanned_data[idx][3:])
+    ScannedTSV = np.log(np.array(ScannedTSV).astype(float))
 
     # equalize tasks to each server, and equalize sequences
     per_server_num = Input_Length // server_sum
@@ -229,7 +229,7 @@ def divideTIPPredictData(args):
     stop_index = np.cumsum(base)
 
     # receive quests based on server number
-    origin_gene, origin_sequence, origin_rbv_data = [], [], []  # origin data
+    origin_gene, origin_sequence, origin_tsv_data = [], [], []  # origin data
     if server_num == 0:
         left = 0
     else:
@@ -238,13 +238,13 @@ def divideTIPPredictData(args):
     for idx in range(left, right):
         gene = Gene[idx]
         sequence = Sequence[idx]
-        rbv_data = ScannedRBV[idx]
+        tsv_data = ScannedTSV[idx]
         origin_gene.append(gene)
         origin_sequence.append(sequence)
-        origin_rbv_data.append(rbv_data)
+        origin_tsv_data.append(tsv_data)
     origin_gene = np.array(origin_gene)
     origin_sequence = np.array(origin_sequence)
-    origin_rbv_data = np.array(origin_rbv_data)
+    origin_tsv_data = np.array(origin_tsv_data)
 
     # Distribute the sequences picked up by this server equally to each core(process)
     data_len = len(origin_gene)
@@ -257,13 +257,13 @@ def divideTIPPredictData(args):
 
     divided_gene = [origin_gene[0:stop_core_index[0]]]
     divided_sequence = [origin_sequence[0:stop_core_index[0]]]
-    divided_rbv_data = [origin_rbv_data[0:stop_core_index[0]]]
+    divided_tsv_data = [origin_tsv_data[0:stop_core_index[0]]]
     for core_num in range(1, core_sum - 1):
         divided_gene.append(origin_gene[stop_core_index[core_num - 1]:stop_core_index[core_num]])
         divided_sequence.append(origin_sequence[stop_core_index[core_num - 1]:stop_core_index[core_num]])
-        divided_rbv_data.append(origin_rbv_data[stop_core_index[core_num - 1]:stop_core_index[core_num]])
+        divided_tsv_data.append(origin_tsv_data[stop_core_index[core_num - 1]:stop_core_index[core_num]])
     divided_gene.append(origin_gene[stop_core_index[core_sum - 2]:])
     divided_sequence.append(origin_sequence[stop_core_index[core_sum - 2]:])
-    divided_rbv_data.append(origin_rbv_data[stop_core_index[core_sum - 2]:])
-    return origin_gene, origin_sequence, divided_gene, divided_sequence, divided_rbv_data, Activity
+    divided_tsv_data.append(origin_tsv_data[stop_core_index[core_sum - 2]:])
+    return origin_gene, origin_sequence, divided_gene, divided_sequence, divided_tsv_data, Activity
 
